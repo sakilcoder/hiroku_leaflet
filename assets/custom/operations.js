@@ -69,7 +69,7 @@ let GetLegendValues = function(data, priceIndex){
 let updateValueToStatesGeojson = function () {
     $.get(statesUrl, function(data, status){
         data = JSON.parse(data);
-        console.log(data);
+        // console.log(data);
         GetLegendValues(data, 5);
         for(i=0;i<states.features.length;i++){
             for (let j = 0; j < data.length; j++) {
@@ -101,15 +101,15 @@ let updateValueToMesoregion = function(stateId){
     
     $.get(mesoregironsByStateUrl+stateId, function(data, status){
         data = JSON.parse(data);
-        GetLegendValues(data, 5);
-        console.log(data);
+        GetLegendValues(data, 6);
+        // console.log(data);
         for(i=0;i<filteredreg.length;i++){
             for (let j = 0; j < data.length; j++) {
-                if(data[j][2] == filteredreg[i].properties.MesoregionName){
-                    filteredreg[i].properties.DateKey = data[j][0];
-                    filteredreg[i].properties.MinPrice = data[j][3];
-                    filteredreg[i].properties.MaxPrice = data[j][4];
-                    filteredreg[i].properties.AveragePrice = data[j][5];
+                if(data[j][3] == filteredreg[i].properties.MesoregionName){
+                    filteredreg[i].properties.DateKey = data[j][1];
+                    filteredreg[i].properties.MinPrice = data[j][4];
+                    filteredreg[i].properties.MaxPrice = data[j][5];
+                    filteredreg[i].properties.AveragePrice = data[j][6];
                     continue;
                 }                
             }
@@ -142,7 +142,7 @@ let updateValueToCity = function(regionId){
     $.get(citiesByMesoregionUrl+regionId, function(data, status){
         data = JSON.parse(data);
         GetLegendValues(data, 4);
-        console.log(data);
+        // console.log(data);
         for(i=0;i<filtered_city.length;i++){
             for (let j = 0; j < data.length; j++) {
                 if(data[j][2] == filtered_city[i].properties.name){
@@ -179,13 +179,12 @@ let updateValueToSao = function(cityId){
     
     $.get(saopauloUrl, function(data, status){
         data = JSON.parse(data);
-        GetLegendValues(data, 5);
+        GetLegendValues(data, 4);
         console.log(data);
         for(i=0;i<saopaulo.features.length;i++){
             for (let j = 0; j < data.length; j++) {
-                if(data[j][2] == saopaulo.features[i].properties.name){
-                    saopaulo.features[i].properties.DateKey = data[j][0];
-                    saopaulo.features[i].properties.price_m2 = data[j][5];
+                if(data[j][1] == saopaulo.features[i].properties.name){
+                    saopaulo.features[i].properties.price_m2 = data[j][4];
                     continue;
                 }                
             }
