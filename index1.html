@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+        integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+        integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+        crossorigin=""></script>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .leaflet-container {
+            height: 100%;
+            width: 100%;
+            /* max-width: 100%;
+			max-height: 100%; */
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+
+        .legend {
+            text-align: left;
+            line-height: 18px;
+            color: #555;
+        }
+
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id='map'></div>
+
+    <script type="text/javascript" src="assets/data/imo_states.js" ></script>
+    <script type="text/javascript" src="assets/data/imo_mesoregions.js" ></script>
+    <script type="text/javascript" src="assets/data/imo_cities.js" ></script>
+
+    <script type="text/javascript">
+
+        var map = L.map('map').setView([-50.78, -9.99], 4);
+        map.options.minZoom = 4;
+        map.options.maxZoom = 14;
+
+        var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: ''
+        }).addTo(map);
+
+        // get color depending on population density value
+        function getStateColor(d) {
+            return d > 4000 ? '#C80000' :
+                        d > 3000 ? '#FFA520' :
+                            d > 2500 ? '#FBE432' :
+                                d > 2000 ? '#13BE00' : '#008854';
+        }
+        function getRegionColor(d) {
+            return d > 4000 ? '#C80000' :
+                        d > 3000 ? '#FFA520' :
+                            d > 2200 ? '#FBE432' :
+                                d > 1000 ? '#13BE00' : '#008854';
+        }
+
+        function styleState(feature) {
+            return {
+                weight: 1,
+                opacity: 1,
+                color: 'white',
+                fillOpacity: 0.7,
+                fillColor: getStateColor(feature.properties.AveragePerState)
+            };
+        }
+
+        function styleRegion(feature) {
+            return {
+                weight: 1,
+                opacity: 1,
+                color: 'white',
+                fillOpacity: 0.7,
+                fillColor: getRegionColor(feature.properties.AveragePerMesoregion)
+            };
+        }
+
+        function styleCity(feature) {
+            return {
+                weight: 1,
+                opacity: 1,
+                color: 'white',
+                fillOpacity: 0.7,
+                fillColor: getRegionColor(feature.properties.price_m2)
+            };
+        }
+
+        function highlightFeature(e) {
+            var layer = e.target;
+
+            layer.setStyle({
+                weight: 3,
+                color: '#22FFEE',
+                fillOpacity: 0.7
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+        }
+
+        var stateLayer;
+        var regionsLayer;
+        var citiesLayer;
+
+        function resetStateHighlight(e) {
+            stateLayer.resetStyle(e.target);
+        }
+        function resetRegionHighlight(e) {
+            regionsLayer.resetStyle(e.target);
+        }
+        function resetCityHighlight(e) {
+            citiesLayer.resetStyle(e.target);
+        }
+
+        function zoomToFeature(e) {
+            map.fitBounds(e.target.getBounds());
+        }
+
+        function stateClickedZoomLevel(e) {
+            let center = e.target.getBounds().getCenter();
+            console.log(center);
+            map.setView([center.lat, center.lng], 7);
+        }
+        function regionClickedZoomLevel(e) {
+            let center = e.target.getBounds().getCenter();
+            console.log(center);
+            map.setView([center.lat, center.lng], 8);
+        }
+        function cityClickedZoomLevel(e) {
+            let center = e.target.getBounds().getCenter();
+            console.log(center);
+            map.setView([center.lat, center.lng], 10);
+        }
+
+        function onEachFeatureState(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetStateHighlight,
+                click: stateClickedZoomLevel
+            });
+        }
+
+        function onEachFeatureRegion(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetRegionHighlight,
+                click: regionClickedZoomLevel
+            });
+        }
+
+        function onEachFeatureCity(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetCityHighlight,
+                click: cityClickedZoomLevel
+            });
+        }
+
+        /* global statesData */
+        stateLayer = L.geoJson(states  , {
+            style: styleState,
+            onEachFeature: onEachFeatureState
+        }).addTo(map);
+        map.fitBounds(stateLayer.getBounds());
+
+        regionsLayer = L.geoJson(regions  , {
+            style: styleRegion,
+            onEachFeature: onEachFeatureRegion
+        });
+        citiesLayer = L.geoJson(cities  , {
+            style: styleCity,
+            onEachFeature: onEachFeatureCity
+        });
+
+        map.on("zoomend", function (e) { 
+            // console.log("ZOOMEND", map.getZoom());
+            let zoomLevel = map.getZoom();
+            console.log(zoomLevel);
+
+            map.removeLayer(stateLayer);
+            map.removeLayer(regionsLayer);
+            map.removeLayer(citiesLayer);
+
+            if(zoomLevel>=4 && zoomLevel <= 6){
+                map.addLayer(stateLayer);
+            }else if(zoomLevel > 6 && zoomLevel <= 7){
+                map.addLayer(regionsLayer);
+            }else if(zoomLevel > 7 && zoomLevel <= 9.5){
+                map.addLayer(citiesLayer);
+            }else if(zoomLevel > 9.5 && zoomLevel <= 10){
+                
+            }else{
+
+                // map.removeLayer(stateLayer);
+                // map.removeLayer(regionsLayer);
+                // map.removeLayer(citiesLayer);
+
+            }
+        });
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>
