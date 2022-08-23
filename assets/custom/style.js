@@ -31,7 +31,17 @@ function styleDisRegion(feature) {
         opacity: 1,
         color: 'white',
         fillOpacity: 1,
-        fillColor: "#939393"
+        fillColor: "#a8a8a8"
+    };
+}
+
+function styleDisCity(feature) {
+    return {
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        fillOpacity: 1,
+        fillColor: "#7e7e7e"
     };
 }
 

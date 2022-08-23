@@ -60,10 +60,10 @@ let GetLegendValues = function(data, priceIndex){
         currentValue = Math.ceil(currentValue + everyIncrement);
         legendValues.push(currentValue);
     }
-    strMinPrice = minMax[0] + ' $'
-    strMaxPrice = minMax[1] + ' $'
+    strMinPrice = minMax[0] + ' R$'
+    strMaxPrice = minMax[1] + ' R$'
     // console.log([prices, minMax, everyIncrement, legendValues]);
-
+    legend.update();
 }
 
 let updateValueToStatesGeojson = function () {
@@ -180,7 +180,7 @@ let updateValueToSao = function(cityId){
     $.get(saopauloUrl, function(data, status){
         data = JSON.parse(data);
         GetLegendValues(data, 4);
-        console.log(data);
+        // console.log(data);
         for(i=0;i<saopaulo.features.length;i++){
             for (let j = 0; j < data.length; j++) {
                 if(data[j][1] == saopaulo.features[i].properties.name){
@@ -189,12 +189,21 @@ let updateValueToSao = function(cityId){
                 }                
             }
         }
-       
+
+        filtered_city = _.filter(cities.features, function (r) {
+            return r.properties.mesoregion_id == 3515; // -1 means not present
+        });
+    
+        dis_cityLayer = L.geoJson(filtered_city, {
+            style: styleDisCity,
+            onEachFeature: onEachFeatureDisCity
+        }).addTo(map);
+
         spLayer = L.geoJson(saopaulo, {
             style: styleSao,
             onEachFeature: onEachFeatureSao
         }).addTo(map);
-        // map.fitBounds(spLayer.getBounds());
+        map.fitBounds(spLayer.getBounds());
         
     });
 }

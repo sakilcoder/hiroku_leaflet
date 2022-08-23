@@ -772,3 +772,13 @@ svg.leaflet-image-layer.leaflet-interactive path {
 		color-adjust: exact;
 	}
 }
+
+.leaflet-label {
+    width: 100px;
+    line-height: 12px;
+    text-align: center;
+}
+.leaflet-label .pct{
+font-size: 20px;
+font-weight: 600;
+}

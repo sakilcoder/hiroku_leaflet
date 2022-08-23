@@ -62,6 +62,9 @@ function resetRegionHighlight(e) {
 function resetCityHighlight(e) {
     citiesLayer.resetStyle(e.target);
 }
+function resetSpHighlight(e) {
+    spLayer.resetStyle(e.target);
+}
 
 function zoomToFeature(e) {
     map.fitBounds(e.target.getBounds());
@@ -89,7 +92,7 @@ function regionClicked(e) {
 }
 
 function cityClicked(e) {
-
+    console.log(e.sourceTarget.feature.properties);
     let cityId = parseInt(e.sourceTarget.feature.properties.id);
     if(cityId == 5345){
         updateValueToSao(cityId);
@@ -106,11 +109,20 @@ function onEachFeatureState(feature, layer) {
         mouseout: resetStateHighlight,
         click: stateClicked
     });
-
+    
     var popup = L.popup();
     let strContent = '<p style="text-align: center;"><b>' + feature.properties.StateName + '<br>Price: ' + feature.properties.AveragePerState + '</b></p>';
     popup.setContent(strContent);
     layer.bindPopup(popup, popupOptions);
+    // layer.bindLabel(feature.properties.StateName, { direction: 'auto' })
+    // layer.bindTooltip(feature.properties.StateName, {permanent: true, direction: 'center'})
+
+    // var label = new L.Label();
+    // label.setContent(feature.properties.StateName);
+    // label.setLatLng(layer.getBounds().getCenter());
+    // layer.showLabel(label);
+
+    // console.log(layer.getBounds().getCenter());
 
     layer.on('mouseover', function (e) {
         var popup = e.target.getPopup();
@@ -154,6 +166,28 @@ function onEachFeatureDisRegion(feature, layer) {
 
     var popup = L.popup();
     let strContent = '<p style="text-align: center;"><b>' + feature.properties.MesoregionName + '<br>Price: ' + feature.properties.AveragePrice + '</b></p>';
+    popup.setContent(strContent);
+    layer.bindPopup(popup, popupOptions);
+
+    layer.on('mouseover', function (e) {
+        var popup = e.target.getPopup();
+        popup.setLatLng(e.latlng).openOn(map);
+
+    });
+
+    layer.on('mouseout', function (e) {
+        e.target.closePopup();
+    });
+}
+function onEachFeatureDisCity(feature, layer) {
+    layer.on({
+        // mouseover: highlightFeatureRegion,
+        // mouseout: resetDisRegionHighlight,
+        // click: regionClicked
+    });
+
+    var popup = L.popup();
+    let strContent = '<p style="text-align: center;"><b>' + feature.properties.name + '<br>Price: ' + feature.properties.price_m2 + '</b></p>';
     popup.setContent(strContent);
     layer.bindPopup(popup, popupOptions);
 
@@ -217,7 +251,7 @@ function onEachFeatureCity(feature, layer) {
 function onEachFeatureSao(feature, layer) {
     layer.on({
         mouseover: highlightFeature,
-        mouseout: resetCityHighlight,
+        mouseout: resetSpHighlight,
     });
 
     var popup = L.popup();

@@ -4,6 +4,7 @@ var citiesLayer;
 var spLayer;
 var dis_stateLayer;
 var dis_regionsLayer;
+var dis_cityLayer;
 
 let minMax = [];
 let legendValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -28,20 +29,26 @@ var legend = L.control({ position: 'bottomright' });
 
 legend.onAdd = function (map) {
 
-    var div = L.DomUtil.create('div', 'info legend');
+    // var div = L.DomUtil.create('div', 'info legend');
+    // div.innerHTML = str;
+    // return div;
 
-    // str = '150 €';
-    str = strMinPrice;
-    str += '<div class="progress" style="height:5px">';
+    this._div = L.DomUtil.create('div', 'info legend');
+    this.update();
+    return this._div;
+};
+
+legend.update = function (props) {
+    str = '<div class="input-group"><span class="input-group-addon">'+strMinPrice+'</span>';
+    str += '<div class="progress input-group-addon" style="height:20px; width:300px">';
     for(i=0;i<legendColors.length;i++){
         
         str += '<div class="progress-bar" role="progressbar" style="width:10%; background-color:'+ legendColors[i] +' !important;"></div>';
     }
     str += '</div>';
-    str += strMaxPrice;
+    str += '<span class="input-group-addon" id="basic-addon1">'+strMaxPrice+'</span></div>';
 
-    div.innerHTML = str;
-    return div;
+    this._div.innerHTML = str;
 };
 
 legend.addTo(map);
@@ -59,9 +66,12 @@ L.easyButton('fa-home fa-lg', function () {
         map.removeLayer(dis_stateLayer);
     if(dis_regionsLayer)
         map.removeLayer(dis_regionsLayer);
+    if(dis_cityLayer)
+        map.removeLayer(dis_cityLayer);
 
-    map.addLayer(stateLayer);
-    map.fitBounds(stateLayer.getBounds());
+    updateValueToStatesGeojson();
+    // map.addLayer(stateLayer);
+    // map.fitBounds(stateLayer.getBounds());
 
 }).addTo(map);
 
@@ -83,8 +93,12 @@ map.on("zoomend", function (e) {
             map.removeLayer(dis_stateLayer);
         if(dis_regionsLayer)
             map.removeLayer(dis_regionsLayer);
-
-        map.addLayer(stateLayer);
+        if(dis_cityLayer)
+            map.removeLayer(dis_cityLayer);
+        updateValueToStatesGeojson();
+        // map.addLayer(stateLayer);
 
     }
 });
+
+
