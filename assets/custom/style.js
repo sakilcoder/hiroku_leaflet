@@ -12,7 +12,7 @@ function styleState(feature) {
         weight: 2,
         opacity: 1,
         color: 'white',
-        fillOpacity: 1,
+        fillOpacity: .85,
         fillColor: getLegendColor(feature.properties.AveragePerState) //  "#d3d3d3"
     };
 }
@@ -50,7 +50,7 @@ function styleRegion(feature) {
         weight: 2,
         opacity: 1,
         color: 'white',
-        fillOpacity: 1,
+        fillOpacity: .65,
         fillColor: getLegendColor(feature.properties.AveragePrice)
     };
 }
@@ -60,7 +60,7 @@ function styleCity(feature) {
         weight: 2,
         opacity: 1,
         color: 'white',
-        fillOpacity: 1,
+        fillOpacity: .5,
         fillColor: getLegendColor(feature.properties.price_m2)
     };
 }
@@ -70,7 +70,7 @@ function styleSao(feature) {
         weight: .5,
         opacity: 1,
         color: 'white',
-        fillOpacity: 1,
+        fillOpacity: .25,
         fillColor: getLegendColor(feature.properties.price_m2)
     };
 }
