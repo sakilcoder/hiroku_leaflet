@@ -39,7 +39,22 @@ function getRegionColor(d) {
                 d > 1000 ? '#13BE00' : '#008854';
 }
 
-
+let removeLayers = function(){
+    if(stateLayer)
+            map.removeLayer(stateLayer);
+    if(regionsLayer)
+        map.removeLayer(regionsLayer);
+    if(citiesLayer)
+        map.removeLayer(citiesLayer);
+    if(spLayer)
+        map.removeLayer(spLayer);
+    if(dis_stateLayer)   
+        map.removeLayer(dis_stateLayer);
+    if(dis_regionsLayer)
+        map.removeLayer(dis_regionsLayer);
+    if(dis_cityLayer)
+        map.removeLayer(dis_cityLayer);
+}
 
 let GetLegendValues = function(data, priceIndex){
     let prices = [];
@@ -67,6 +82,7 @@ let GetLegendValues = function(data, priceIndex){
 }
 
 let updateValueToStatesGeojson = function () {
+    removeLayers();
     $.get(statesUrl, function(data, status){
         data = JSON.parse(data);
         // console.log(data);
@@ -95,6 +111,7 @@ let updateValueToStatesGeojson = function () {
 }
 
 let updateValueToMesoregion = function(stateId){
+    removeLayers();
     filteredreg = _.filter(regions.features, function (r) {
         return r.properties.StateID == stateId; // -1 means not present
     });
@@ -132,13 +149,15 @@ let updateValueToMesoregion = function(stateId){
 }
 
 let updateValueToCity = function(regionId){
-    
+    removeLayers();
+    map.addLayer(dis_stateLayer);
+
     filtered_city = _.filter(cities.features, function (r) {
         return r.properties.mesoregion_id == regionId; // -1 means not present
     });
 
     let stateId = filtered_city[0].properties.state_id;
-    
+
     $.get(citiesByMesoregionUrl+regionId, function(data, status){
         data = JSON.parse(data);
         GetLegendValues(data, 4);
@@ -153,10 +172,12 @@ let updateValueToCity = function(regionId){
             }
         }
 
-        dis_stateLayer = L.geoJson(states, {
-            style: styleDisState,
-            onEachFeature: onEachFeatureDisState
-        }).addTo(map);
+        // dis_stateLayer = L.geoJson(states, {
+        //     style: styleDisState,
+        //     onEachFeature: onEachFeatureDisState
+        // }).addTo(map);
+
+        // map.addLayer(stateLayer);
 
         filteredreg = _.filter(regions.features, function (r) {
             return r.properties.StateID == stateId; // -1 means not present
@@ -176,7 +197,9 @@ let updateValueToCity = function(regionId){
 }
 
 let updateValueToSao = function(cityId){
-    
+    removeLayers();
+    map.addLayer(dis_stateLayer);
+    map.addLayer(dis_regionsLayer);
     $.get(saopauloUrl, function(data, status){
         data = JSON.parse(data);
         GetLegendValues(data, 4);
@@ -189,7 +212,7 @@ let updateValueToSao = function(cityId){
                 }                
             }
         }
-
+        
         filtered_city = _.filter(cities.features, function (r) {
             return r.properties.mesoregion_id == 3515; // -1 means not present
         });

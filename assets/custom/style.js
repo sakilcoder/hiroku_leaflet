@@ -21,7 +21,7 @@ function styleDisState(feature) {
         weight: 2,
         opacity: 1,
         color: 'white',
-        fillOpacity: 1,
+        fillOpacity: .5,
         fillColor: "#d3d3d3"
     };
 }
@@ -30,7 +30,7 @@ function styleDisRegion(feature) {
         weight: 2,
         opacity: 1,
         color: 'white',
-        fillOpacity: 1,
+        fillOpacity: .5,
         fillColor: "#a8a8a8"
     };
 }
@@ -40,7 +40,7 @@ function styleDisCity(feature) {
         weight: 2,
         opacity: 1,
         color: 'white',
-        fillOpacity: 1,
+        fillOpacity: .5,
         fillColor: "#7e7e7e"
     };
 }

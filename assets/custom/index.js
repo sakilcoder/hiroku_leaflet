@@ -75,9 +75,29 @@ L.easyButton('fa-home fa-lg', function () {
 
 }).addTo(map);
 
+var i = 0;
+stateLayer.eachLayer(function(layer) {
+    var context = {
+        feature: layer.feature,
+        variables: {}
+    };
+    layer.bindTooltip((layer.feature.properties['StateName'] !== null?String('<div style="color: #000000; font-size: 10pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['StateName']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'no_class_added'});
+    labels.push(layer);
+    totalMarkers += 1;
+        layer.added = true;
+        addLabel(layer, i);
+        i++;
+});
+resetLabels([stateLayer]);
+map.on("layeradd", function(){
+    resetLabels([stateLayer]);
+});
+map.on("layerremove", function(){
+    resetLabels([stateLayer]);
+});
 
 map.on("zoomend", function (e) {
-    
+    resetLabels([stateLayer]);
     let zoomLevel = map.getZoom();
 
     if (zoomLevel == 4) {
@@ -100,5 +120,3 @@ map.on("zoomend", function (e) {
 
     }
 });
-
-

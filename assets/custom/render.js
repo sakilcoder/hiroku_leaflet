@@ -5,7 +5,7 @@ function highlightFeature(e) {
     layer.setStyle({
         weight: 3,
         color: '#22FFEE',
-        fillOpacity: .9,
+        fillOpacity: 0,
         fillColor: '#f22a77'
     });
 
@@ -20,7 +20,7 @@ function highlightFeatureRegion(e) {
     layer.setStyle({
         weight: 3,
         color: '#22FFEE',
-        fillOpacity: .9,
+        fillOpacity: 0,
         fillColor: '#f22a77'
     });
 
@@ -36,7 +36,7 @@ function highlightFeatureState(e) {
     layer.setStyle({
         weight: 3,
         color: '#22FFEE',
-        fillOpacity: .9,
+        fillOpacity: 0,
         fillColor: '#f22a77' // getLegendColor(feature.properties.AveragePerState)
     });
 
